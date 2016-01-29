@@ -30,6 +30,11 @@
 .. _Python: http://python.org/
 
 ============================
+memo
+============================
+python bottle.py --debug --reload app_module.controller
+
+============================
 Bottle: Python Web Framework
 ============================
 
