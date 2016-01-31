@@ -3491,6 +3491,7 @@ class TemplateError(HTTPError):
 
 class BaseTemplate(object):
     """ Base class and minimal API for template adapters """
+    """ ベースクラスとテンプレートアダプタのミニマルAPI"""
     extensions = ['tpl', 'html', 'thtml', 'stpl']
     settings = {}  #used in prepare()
     defaults = {}  #used in render()
@@ -3509,8 +3510,14 @@ class BaseTemplate(object):
         The lookup parameter stores a list containing directory paths.
         The encoding parameter should be used to decode byte strings or files.
         The settings parameter contains a dict for engine-specific settings.
+
+            新しいテンプレートを作る
+        ソースパラメータ(文字列やバッファ)がない場合、引数はテンプレートファイル名として使われる
+        セルフソースやセルフファイル名がセットされているとサブクラスは判断することができる 
+        ルックアップパラメータはディレクトリパスを含んだリストを保存する 
+        エンコーディングパラメータはバイト文字列やファイルをデコードする
+        セッテイングスパラメータはエンジン特有のセッティングのdictionaryを含む
         """
-        self.name = name
         self.source = source.read() if hasattr(source, 'read') else source
         self.filename = source.filename if hasattr(source, 'filename') else None
         self.lookup = [os.path.abspath(x) for x in lookup] if lookup else []
@@ -3710,6 +3717,7 @@ class SimpleTemplate(BaseTemplate):
 
     def render(self, *args, **kwargs):
         """ Render the template using keyword arguments as local variables. """
+        """ テローカル変数のキーワード引数を使ってンプレートをレンダリングする""" 
         env = {}
         stdout = []
         for dictarg in args:
@@ -3726,7 +3734,8 @@ class StplSyntaxError(TemplateError):
 
 class StplParser(object):
     """ Parser for stpl templates. """
-    _re_cache = {}  #: Cache for compiled re patterns
+    """ stplテンプレートパーサー"""
+    _re_cache = {}  #: Cache for compiled re patterns コンパイル済みのリパターンキャッシュ
 
     # This huge pile of voodoo magic splits python code into 8 different tokens.
     # We use the verbose (?x) regex mode to make this more manageable
@@ -3912,6 +3921,9 @@ def template(*args, **kwargs):
     You can use a name, a filename or a template string as first parameter.
     Template rendering arguments can be passed as dictionaries
     or directly (as keyword arguments).
+    レンダリングされたテンプレートを取得する
+    名前やファイル名やテンプレート文字列を第一引数に使うことが可能
+    テンプレートをレンダリングする引数はdictionaryやキーワード引数として直接渡すことが可能
     """
     tpl = args[0] if args else None
     adapter = kwargs.pop('template_adapter', SimpleTemplate)
@@ -3948,6 +3960,11 @@ def view(tpl_name, **defaults):
             process the template, but return the handler result as is.
             This includes returning a HTTPResponse(dict) to get,
             for instance, JSON with autojson or other castfilters.
+
+        Decorator: handler用のtemplateをレンダリングする
+        handlerは次のようにコントロールすることが可能
+
+          - dictionaryのテンプレートを返しテンプレートのvarを書き込む
     """
 
     def decorator(func):
@@ -3979,7 +3996,7 @@ jinja2_view = functools.partial(view, template_adapter=Jinja2Template)
 TEMPLATE_PATH = ['./', './views/']
 TEMPLATES = {}
 DEBUG = False
-NORUN = False  # If set, run() does nothing. Used by load_app()
+NORUN = False  # If set, run() does nothing. Used by load_app() # セットした場合、run()は無効になり、load_app()を利用する
 
 #: A dict to map HTTP status codes (e.g. 404) to phrases (e.g. 'Not Found')
 HTTP_CODES = httplib.responses.copy()
@@ -3992,6 +4009,7 @@ _HTTP_STATUS_LINES = dict((k, '%d %s' % (k, v))
                           for (k, v) in HTTP_CODES.items())
 
 #: The default template used for error pages. Override with @error()
+#: エラーページで使われるデフォルトテンプレート。オーバーライドする場合は@error()を使う
 ERROR_PAGE_TEMPLATE = """
 %%try:
     %%from %s import DEBUG, request
@@ -4030,22 +4048,31 @@ ERROR_PAGE_TEMPLATE = """
 #: A thread-safe instance of :class:`LocalRequest`. If accessed from within a
 #: request callback, this instance always refers to the *current* request
 #: (even on a multi-threaded server).
+#: スレッドセーフなLocalRequestクラスのインスタンス
+#: リクエストコールバック範囲内でアクセスしても、このインスタンスはマルチスレッドサーバだとしても
+#: カレントリクエストを参照する。
 request = LocalRequest()
 
 #: A thread-safe instance of :class:`LocalResponse`. It is used to change the
 #: HTTP response for the *current* request.
+#: スレッドセーフなLocalResponseクラスのインスタンス
+#: カレントリクエストをHTTPレスポンスに変換する
 response = LocalResponse()
 
 #: A thread-safe namespace. Not used by Bottle.
+#: スレッドセーフnamaspace。Bottleでは使っていない。
 local = threading.local()
 
 # Initialize app stack (create first empty Bottle app)
 # BC: 0.6.4 and needed for run()
+# app stackを初期化する（最初に空のBottle appを生成する）
 app = default_app = AppStack()
 app.push()
 
 #: A virtual package that redirects import statements.
 #: Example: ``import bottle.ext.sqlite`` actually imports `bottle_sqlite`.
+#: import ステートメントをリダイレクトするバーチャルパッケージ
+#: 例: ``imort bottle.ext.sqlite`` とすると実際は`bottle_sqlite`をimportする
 ext = _ImportRedirect('bottle.ext' if __name__ == '__main__' else
                       __name__ + ".ext", 'bottle_%s').module
 
