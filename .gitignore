@@ -1,4 +1,7 @@
 *.pyc
+env/
+latex/
+html/
 *.pyo
 *.db
 *.log

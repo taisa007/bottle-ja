@@ -1152,33 +1152,44 @@ class BaseRequest(object):
         Adding new attributes to a request actually adds them to the environ
         dictionary (as 'bottle.request.ext.<name>'). This is the recommended
         way to store and access request-specific data.
+        
+        WSGI環境dictionariesのラッパーは多くの簡易的なアクセスメソッドやプロパティを追加する(その多くはread only)
+
+        新しい属性をリクエストに追加することはそれらを環境変数に追加すること（'bottle.request.ext.<name>'として）
+        これはリクエスト特有のデータにアクセスしたり保存したりする推奨方法とする
     """
 
     __slots__ = ('environ', )
 
     #: Maximum size of memory buffer for :attr:`body` in bytes.
+    #: バイト中にある`body`属性のメモリーバッファMaxサイズ  
     MEMFILE_MAX = 102400
 
     def __init__(self, environ=None):
         """ Wrap a WSGI environ dictionary. """
         #: The wrapped WSGI environ dictionary. This is the only real attribute.
         #: All other attributes actually are read-only properties.
+        #: ラップされたWSGI環境変数。実際の属性のみ。
+        #: 全属性はread onlyプロパティ
         self.environ = {} if environ is None else environ
         self.environ['bottle.request'] = self
 
     @DictProperty('environ', 'bottle.app', read_only=True)
     def app(self):
         """ Bottle application handling this request. """
+        """ Bottleアプリはこのリクエストをハンドリングする"""
         raise RuntimeError('This request is not connected to an application.')
 
     @DictProperty('environ', 'bottle.route', read_only=True)
     def route(self):
         """ The bottle :class:`Route` object that matches this request. """
+        """ Bottle class:`Route`オブジェクト`はリクエストをマッチングする"""
         raise RuntimeError('This request is not connected to a route.')
 
     @DictProperty('environ', 'route.url_args', read_only=True)
     def url_args(self):
         """ The arguments extracted from the URL. """
+        """ URLにある引数"""
         raise RuntimeError('This request is not connected to a route.')
 
     @property
