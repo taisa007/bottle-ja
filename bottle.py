@@ -549,6 +549,9 @@ class Route(object):
     """ This class wraps a route callback along with route specific metadata and
         configuration and applies Plugins on demand. It is also responsible for
         turing an URL path rule into a regular expression usable by the Router.
+
+        このクラスはroute特有のメタデータやコンフィグを加えたrouteコールバックをラップし
+        オンデマンドでプラグインを適用する。またルーターで使える正規表現にURLパスルールを変換する
     """
 
     def __init__(self, app, rule, method, callback,
@@ -661,6 +664,9 @@ class Bottle(object):
 
         :param catchall: If true (default), handle all exceptions. Turn off to
                          let debugging middleware handle exceptions.
+
+        Bottleオブジェクトは一つのWebアプリケーションで、routes、callbacks、plugins、resources、configurationで構成されている。
+        このインスタンスはWSGIアプリケーションから呼ばれる。
     """
 
     def __init__(self, catchall=True, autojson=True):
@@ -1898,6 +1904,10 @@ class LocalRequest(BaseRequest):
         instance of this class (:data:`request`). If accessed during a
         request/response cycle, this instance always refers to the *current*
         request (even on a multithreaded server). """
+    """ ローカルスレッド`BaseRequest`クラスのサブクラス それぞれのスレッドで違う属性を持った
+        常に一つのグローバルインスタンスがある。request/responseサイクル中にアクセスがあった場合
+        このインスタンスは常にカレントリクエストを指し示す（たとえマルチスレッドサーバだとしても）
+    """
     bind = BaseRequest.__init__
     environ = _local_property()
 
