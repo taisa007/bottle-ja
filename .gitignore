@@ -1,4 +1,6 @@
 *.pyc
+.idea/
+*.iml
 env/
 latex/
 html/

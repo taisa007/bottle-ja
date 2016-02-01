@@ -1189,34 +1189,40 @@ class BaseRequest(object):
     @DictProperty('environ', 'route.url_args', read_only=True)
     def url_args(self):
         """ The arguments extracted from the URL. """
-        """ URLにある引数"""
+        """ URLにある引数を取り出す"""
         raise RuntimeError('This request is not connected to a route.')
 
     @property
     def path(self):
         """ The value of ``PATH_INFO`` with exactly one prefixed slash (to fix
             broken clients and avoid the "empty path" edge case). """
+        """ スラッシュが前にある``PATH_INFO``の値。壊れてるものはfixし空のpathは無視する"""
         return '/' + self.environ.get('PATH_INFO', '').lstrip('/')
 
     @property
     def method(self):
         """ The ``REQUEST_METHOD`` value as an uppercase string. """
+        """ 大文字の``REQUEST_METHOD``値 """
         return self.environ.get('REQUEST_METHOD', 'GET').upper()
 
     @DictProperty('environ', 'bottle.request.headers', read_only=True)
     def headers(self):
         """ A :class:`WSGIHeaderDict` that provides case-insensitive access to
             HTTP request headers. """
+        """ `WSGIHeaderDict` これはHTTPリクエストヘッダーに大文字小文字を区別しないアクセスを提供する"""
         return WSGIHeaderDict(self.environ)
 
     def get_header(self, name, default=None):
         """ Return the value of a request header, or a given default value. """
+        """ リクエストヘッダーの値を返す,またはデフォルト値を返す"""
         return self.headers.get(name, default)
 
     @DictProperty('environ', 'bottle.request.cookies', read_only=True)
     def cookies(self):
         """ Cookies parsed into a :class:`FormsDict`. Signed cookies are NOT
             decoded. Use :meth:`get_cookie` if you expect signed cookies. """
+        """ `FormsDict`にパースされたクッキー。サインドクッキーはデコードされていない。
+            `get_cookie`を使うと、サインドクッキーを取得可能"""
         cookies = SimpleCookie(self.environ.get('HTTP_COOKIE', '')).values()
         return FormsDict((c.key, c.value) for c in cookies)
 
