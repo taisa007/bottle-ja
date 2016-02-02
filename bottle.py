@@ -713,6 +713,15 @@ class Bottle(object):
                 Executed once after each request regardless of its outcome.
             app_reset
                 Called whenever :meth:`Bottle.reset` is called.
+
+            callbackをhookに追加する。3つのhooksは実装されている
+
+            before_request
+                リクエストの前に実行される。リクエストコンテキストは利用可能だが、ルーティングはされていない状態
+            after_request
+                リクエストの結果にかかわらずリクエストのあとに実行される
+            app_reset
+                `Bottle.reset`が呼ばれたタイミングで呼ばれる
         """
         if name in self.__hook_reversed:
             self._hooks[name].insert(0, func)
