@@ -740,7 +740,10 @@ class Bottle(object):
 
     def hook(self, name):
         """ Return a decorator that attaches a callback to a hook. See
-            :meth:`add_hook` for details."""
+            :meth:`add_hook` for details.
+
+            hookにcallbackを付与したデコレータを返す
+            詳細は`add_hook`に記載"""
 
         def decorator(func):
             self.add_hook(name, func)
