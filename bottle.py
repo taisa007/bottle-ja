@@ -26,6 +26,8 @@ __license__ = 'MIT'
 # INFO: Some server adapters need to monkey-patch std-lib modules before they
 # are imported. This is why some of the command-line handling is done here, but
 # the actual call to main() is at the end of the file.
+# INFO: いくつかのサーバアダプタはimportする前に、monkey-patch std-libモジュールを読み込む必要がある。
+# その為、いくつかのコマンドラインhandlingはここで先に行うが、実際に呼びだすmain()はこのファイルの最後に記載している。
 
 
 def _cli_parse(args):
@@ -67,8 +69,8 @@ if __name__ == '__main__':
 ###############################################################################
 
 
-import base64, cgi, email.utils, functools, hmac, imp, itertools, mimetypes,\
-        os, re, tempfile, threading, time, warnings
+import base64, cgi, email.utils, functools, hmac, imp, itertools, mimetypes, \
+    os, re, tempfile, threading, time, warnings
 
 from types import FunctionType
 from datetime import date as datedate, datetime, timedelta
@@ -169,7 +171,7 @@ else:  # 2.x
     import cPickle as pickle
     from StringIO import StringIO as BytesIO
     from ConfigParser import SafeConfigParser as ConfigParser, \
-                             Error as ConfigParserError
+        Error as ConfigParserError
     if py25:
         from UserDict import DictMixin
 
@@ -223,8 +225,8 @@ def update_wrapper(wrapper, wrapped, *a, **ka):
 
 
 def depr(major, minor, cause, fix):
-    text = "Warning: Use of deprecated feature or API. (Deprecated in Bottle-%d.%d)\n"\
-           "Cause: %s\n"\
+    text = "Warning: Use of deprecated feature or API. (Deprecated in Bottle-%d.%d)\n" \
+           "Cause: %s\n" \
            "Fix: %s\n" %  (major, minor, cause, fix)
     if DEBUG == 'strict':
         raise DeprecationWarning(text)
@@ -336,7 +338,7 @@ def _re_flatten(p):
     if '(' not in p:
         return p
     return re.sub(r'(\\*)(\(\?P<[^>]+>|\((?!\?))', lambda m: m.group(0) if
-                  len(m.group(1)) % 2 else m.group(1) + '(?:', p)
+    len(m.group(1)) % 2 else m.group(1) + '(?:', p)
 
 
 class Router(object):
@@ -382,9 +384,9 @@ class Router(object):
         self.filters[name] = func
 
     rule_syntax = re.compile('(\\\\*)'
-        '(?:(?::([a-zA-Z_][a-zA-Z_0-9]*)?()(?:#(.*?)#)?)'
-          '|(?:<([a-zA-Z_][a-zA-Z_0-9]*)?(?::([a-zA-Z_]*)'
-            '(?::((?:\\\\.|[^\\\\>]+)+)?)?)?>))')
+                             '(?:(?::([a-zA-Z_][a-zA-Z_0-9]*)?()(?:#(.*?)#)?)'
+                             '|(?:<([a-zA-Z_][a-zA-Z_0-9]*)?(?::([a-zA-Z_]*)'
+                             '(?::((?:\\\\.|[^\\\\>]+)+)?)?)?>))')
 
     def _itertokens(self, rule):
         offset, prefix = 0, ''
@@ -393,7 +395,7 @@ class Router(object):
             g = match.groups()
             if g[2] is not None:
                 depr(0, 13, "Use of old route syntax.",
-                            "Use <name> instead of :name in routes.")
+                     "Use <name> instead of :name in routes.")
             if len(g[0]) % 2:  # Escaped wildcard
                 prefix += match.group(0)[len(g[0]):]
                 offset = match.end()
@@ -740,10 +742,7 @@ class Bottle(object):
 
     def hook(self, name):
         """ Return a decorator that attaches a callback to a hook. See
-            :meth:`add_hook` for details.
-
-            hookにcallbackを付与したデコレータを返す
-            詳細は`add_hook`に記載"""
+            :meth:`add_hook` for details."""
 
         def decorator(func):
             self.add_hook(name, func)
@@ -868,7 +867,7 @@ class Bottle(object):
         removed, remove = [], plugin
         for i, plugin in list(enumerate(self.plugins))[::-1]:
             if remove is True or remove is plugin or remove is type(plugin) \
-            or getattr(plugin, 'name', True) == remove:
+                    or getattr(plugin, 'name', True) == remove:
                 removed.append(plugin)
                 del self.plugins[i]
                 if hasattr(plugin, 'close'): plugin.close()
@@ -1054,8 +1053,8 @@ class Bottle(object):
                 response['Content-Length'] = 0
             return []
         # Join lists of byte or unicode strings. Mixed lists are NOT supported
-        if isinstance(out, (tuple, list))\
-        and isinstance(out[0], (bytes, unicode)):
+        if isinstance(out, (tuple, list)) \
+                and isinstance(out[0], (bytes, unicode)):
             out = out[0][0:0].join(out)  # b'abc'[0:0] -> b''
         # Encode unicode strings
         if isinstance(out, unicode):
@@ -1119,8 +1118,8 @@ class Bottle(object):
         try:
             out = self._cast(self._handle(environ))
             # rfc2616 section 4.3
-            if response._status_code in (100, 101, 204, 304)\
-            or environ['REQUEST_METHOD'] == 'HEAD':
+            if response._status_code in (100, 101, 204, 304) \
+                    or environ['REQUEST_METHOD'] == 'HEAD':
                 if hasattr(out, 'close'): out.close()
                 out = []
             start_response(response._status_line, response.headerlist)
@@ -1459,7 +1458,7 @@ class BaseRequest(object):
             server. """
         env = self.environ
         http = env.get('HTTP_X_FORWARDED_PROTO') \
-             or env.get('wsgi.url_scheme', 'http')
+               or env.get('wsgi.url_scheme', 'http')
         host = env.get('HTTP_X_FORWARDED_HOST') or env.get('HTTP_HOST')
         if not host:
             # HTTP 1.1 requires a Host-header. This is for HTTP/1.0 clients.
@@ -1771,7 +1770,7 @@ class BaseResponse(object):
         """ Create a new response header, replacing any previously defined
             headers with the same name. """
         self._headers[_hkey(name)] = [value if isinstance(value, unicode)
-                                            else str(value)]
+                                      else str(value)]
 
     def add_header(self, name, value):
         """ Add an additional response header, not removing duplicates. """
@@ -2337,7 +2336,7 @@ class ConfigDict(dict):
         """
         config_obj = __import__(path)
         obj = dict([(key, getattr(config_obj, key))
-                for key in dir(config_obj) if key.isupper()])
+                    for key in dir(config_obj) if key.isupper()])
         if squash:
             self.load_dict(obj)
         else:
@@ -2861,14 +2860,14 @@ def cookie_is_encoded(data):
 
 def html_escape(string):
     """ Escape HTML special characters ``&<>`` and quotes ``'"``. """
-    return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')\
-                 .replace('"', '&quot;').replace("'", '&#039;')
+    return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;') \
+        .replace('"', '&quot;').replace("'", '&#039;')
 
 
 def html_quote(string):
     """ Escape and quote a string to be used as an HTTP attribute."""
-    return '"%s"' % html_escape(string).replace('\n', '&#10;')\
-                    .replace('\r', '&#13;').replace('\t', '&#9;')
+    return '"%s"' % html_escape(string).replace('\n', '&#10;') \
+        .replace('\r', '&#13;').replace('\t', '&#9;')
 
 
 def yieldroutes(func):
@@ -3499,8 +3498,8 @@ class FileCheckerThread(threading.Thread):
             if path and exists(path): files[path] = mtime(path)
 
         while not self.status:
-            if not exists(self.lockfile)\
-            or mtime(self.lockfile) < time.time() - self.interval - 5:
+            if not exists(self.lockfile) \
+                    or mtime(self.lockfile) < time.time() - self.interval - 5:
                 self.status = 'error'
                 thread.interrupt_main()
             for path, lmtime in list(files.items()):
@@ -3557,6 +3556,8 @@ class BaseTemplate(object):
         エンコーディングパラメータはバイト文字列やファイルをデコードする
         セッテイングスパラメータはエンジン特有のセッティングのdictionaryを含む
         """
+
+        self.name = name
         self.source = source.read() if hasattr(source, 'read') else source
         self.filename = source.filename if hasattr(source, 'filename') else None
         self.lookup = [os.path.abspath(x) for x in lookup] if lookup else []
@@ -3756,7 +3757,7 @@ class SimpleTemplate(BaseTemplate):
 
     def render(self, *args, **kwargs):
         """ Render the template using keyword arguments as local variables. """
-        """ テローカル変数のキーワード引数を使ってンプレートをレンダリングする""" 
+        """ テローカル変数のキーワード引数を使ってンプレートをレンダリングする"""
         env = {}
         stdout = []
         for dictarg in args:
