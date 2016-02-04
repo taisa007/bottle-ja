@@ -1,5 +1,8 @@
-from bottle import run, default_app
+from bottle import run, route
 
-app = default_app()
-run(app=app, host='localhost', port=8080, debug=True)
 
+@route('/')
+def index():
+    return 'Hello World'
+
+run(host='localhost', port=8000, debug=True, reloader=True)
