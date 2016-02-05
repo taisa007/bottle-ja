@@ -3356,6 +3356,8 @@ def load_app(target):
     """ Load a bottle application from a module and make sure that the import
         does not affect the current default application, but returns a separate
         application object. See :func:`load` for the target parameter. """
+    """ bottle applicationをmoduleからロードし、importがcurrent default applicationに影響を与えていないかを確認し、ダメな場合は別のapplicationオブジェクトを返す
+        ターゲットパラメータについてはfunc:`load`を確認する"""
     global NORUN
     NORUN, nr_old = True, NORUN
     tmp = default_app.push()  # Create a new "default application"
