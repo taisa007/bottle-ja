@@ -1,4 +1,19 @@
-from bottle import route, request, template, cheetah_template, jinja2_template, mako_template, run
+from bottle import get, post, route, request, template, cheetah_template, jinja2_template, mako_template, run
+
+
+@get('/get')
+def get():
+    return 'get'
+
+
+@post('/post')
+def post():
+    return 'post'
+
+
+@route('/routes')
+def routes():
+    return 'routes'
 
 
 @route('/')
