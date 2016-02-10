@@ -1,5 +1,14 @@
-from bottle import get, post, route, request, template, cheetah_template, jinja2_template, mako_template, run
+from bottle import get, post, route, request, template, cheetah_template, jinja2_template, mako_template, run, hook
 
+
+@hook('before_request')
+def before_request():
+    request.session = 'session'
+
+
+@hook('after_request')
+def after_request():
+    print 'test'
 
 @get('/get')
 def get():
