@@ -1658,6 +1658,18 @@ class BaseResponse(object):
 
         Additional keyword arguments are added to the list of headers.
         Underscores in the header name are replaced with dashes.
+
+        レスポンスポディ・ヘッダー・クッキーのストレージクラス
+
+        このクラスはヘッダーに対しては大文字小文字を区別しないdict-likeなアイテムをサポートしている（dictではない）。
+        ヘッダーではなく、ボディのレスポンスパーツを順次処理する
+
+        :param body: レスポンスボディ
+        :param status: HTTPステータスコード（例 200)か理由を含むステータスライン(例 200OK)のどちらか
+        :param headers: dictionaryかname valueペア
+
+        追加のキーワード引数はヘッダーリストに追加される
+        ヘッダー名内の下線は線に置き換えられる
     """
 
     default_status = 200
